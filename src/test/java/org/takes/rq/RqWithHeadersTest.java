@@ -30,6 +30,7 @@ import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.Request;
 
 /**
  * Test case for {@link RqWithHeaders}.
@@ -63,7 +64,31 @@ public final class RqWithHeadersTest {
             )
         );
     }
-
+    /**
+     * RqWithHeaders isn't changed after print().
+     * @throws IOException If some problem inside
+     */
+    @Test
+    public void immutable() throws IOException {
+        final String body = "body";
+        final Request request = new RqWithHeaders(
+            new RqFake("", "", body),
+            "TestHeader: someValue",
+            "SomeHeader: testValue"
+        );
+        MatcherAssert.assertThat(
+            new RqPrint(
+                request
+            ).print(),
+            Matchers.containsString(body)
+        );
+        MatcherAssert.assertThat(
+            new RqPrint(
+                request
+            ).print(),
+            Matchers.containsString(body)
+        );
+    }
     /**
      * Checks RqWithHeaders equals method.
      * @throws Exception If some problem inside
